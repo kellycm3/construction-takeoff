@@ -49,6 +49,8 @@ LONGEST_DIMENSIONAL_FT = 24               # longer than this -> special order le
 SPECIAL_ORDER_LENGTHS_FT = (26, 28, 30, 32)  # available by special order; longer -> LVL/splice
 PRECUT_STUDS_IN = {"92-5/8": 92.625, "104-5/8": 104.625, "116-5/8": 116.625}
 LVL_STOCK_LENGTHS_FT = (8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32)
+NEST_CUTS_UNDER_FT = 6                    # cuts this short are nested several per board
+NEST_STOCK_FT = 12.0                      # ...on boards of this length
 
 # ---------------------------------------------------------------------------
 # What's included. "framing" = floor, wall and roof framing, sheathing, wrap,

@@ -60,6 +60,10 @@ Work in this order:
    rim length, subfloor). Use new_framing = false where existing joists remain.
    A zone with NO FloorSystem is treated as slab-on-grade (treated sill plates).
    Mark basement walls built against concrete as is_furring = true.
+   RENOVATIONS: take off NEW work only. Existing walls, floors and roofs that
+   remain are not listed (except an existing framed floor that new walls sit on:
+   FloorSystem with new_framing = false, subfloor = null). Use the plan legend
+   (existing / new / demolished) to decide.
    For each roof: hip/valley member as printed, number of valleys, and whether
    one end dies into another roof.
 7. Use other_items ONLY for things not already covered by walls, openings, roofs,

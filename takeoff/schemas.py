@@ -73,7 +73,7 @@ class FloorSystem(BaseModel):
     spacing_in: Optional[float]
     typical_span_ft: Optional[float] = Field(description="Typical clear span of the joists in feet (bearing to bearing)")
     subfloor: Optional[str] = Field(description="As printed, e.g. '3/4\" T&G plywood' or '23/32\" AdvanTech'")
-    new_framing: bool = Field(description="False if the plans keep existing joists (subfloor only or nothing)")
+    new_framing: bool = Field(description="False if the plans keep existing joists (subfloor only or nothing). Add an entry with new_framing=false and subfloor=null for existing framed floors that new walls sit on (so they don't get treated sill plates).")
     source: Source
 
 
@@ -84,6 +84,8 @@ class ZoneSpec(BaseModel):
     siding_type: Optional[Literal["fiber_cement", "vinyl", "brick", "wood", "other", "none"]]
     wall_drywall: Optional[Literal["1/2", "5/8_type_x", "1/2_mold", "none"]] = Field(description="Drywall on walls")
     ceiling_drywall: Optional[Literal["1/2", "5/8_type_x", "1/2_mold", "none"]] = Field(description="Drywall on ceilings")
+    wall_sheathing: Optional[str] = Field(description="Exterior wall sheathing as printed, e.g. '7/16\" OSB' or '3/4\" exterior grade plywood'. Null if not shown.")
+    roof_sheathing: Optional[str] = Field(description="Roof sheathing as printed. Null if not shown.")
     source: Source
 
 

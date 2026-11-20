@@ -202,7 +202,9 @@
     "source_note": "General notes 4 & 7",
     "measured_by_scale": false,
     "confidence": "high"
-   }
+   },
+   "wall_sheathing": null,
+   "roof_sheathing": null
   }
  ],
  "other_items": [

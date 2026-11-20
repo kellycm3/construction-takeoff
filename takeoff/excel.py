@@ -26,8 +26,16 @@ THIN = Side(style="thin", color="BFBFBF")
 BOX = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
 
-def _tab(name: str) -> str:
-    return re.sub(r"[\[\]:*?/\\]", "-", name)[:31]
+def _tab(name: str, taken=None) -> str:
+    base = re.sub(r"[\[\]:*?/\\]", "-", name)[:31]
+    if taken is None:
+        return base
+    out, n = base, 2
+    while out.lower() in taken:
+        suffix = f" {n}"
+        out, n = base[:31 - len(suffix)] + suffix, n + 1
+    taken.add(out.lower())
+    return out
 
 
 def _header(ws, project: str, order_id: str, title: str):
@@ -134,11 +142,12 @@ def write_workbook(t: Takeoff, order_id: str, path: Path) -> Path:
         c = notes.cell(row=3 + i, column=2, value=n)
         c.alignment = Alignment(wrap_text=True, vertical="top")
 
+    taken = {"general", "estimator notes"}
     for z in t.zones:
         zrows = [r for r in t.rows if r.zone == z]
         for trade_no in sorted({r.trade_no for r in zrows}):
             trows = [r for r in zrows if r.trade_no == trade_no]
-            ws = wb.create_sheet(_tab(f"{z} - {TAB_NAMES[trade_no]}"))
+            ws = wb.create_sheet(_tab(f"{z} - {TAB_NAMES[trade_no]}", taken))
             _header(ws, t.project_name, order_id, f"{z} - {S.TRADES[trade_no]}")
             end = _write_rows(ws, trows)
             _summary(ws, end, t.summaries[z])
