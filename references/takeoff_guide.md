@@ -189,3 +189,36 @@ Copy counts, sizes and types straight from the window and door schedules.
   of wall; soffit framing about 2 LF of 2x4 per LF of eave; roof bracing
   about 0.9 pieces each of 2x4x16 and 2x6x16 per 100 SF of roof. These are
   in `takeoff/settings.py`.
+
+---
+
+## 5. Estimating context (project-management level)
+
+*Source: Carolyn McGary, "Introduction to Construction Project Management",
+Module Four: Cost Estimating and Procurement,
+https://colorado.pressbooks.pub/introconstructionmanagement/ (CC BY 4.0).
+Summarized in our own words. This book is about the overall estimating
+process, not quantity-takeoff rules; it has no waste factors or takeoff
+procedures.*
+
+- **Estimate levels:** screening / order-of-magnitude (before design, from
+  similar past jobs), preliminary / conceptual, and detailed / definitive
+  (scope defined, design underway). Accuracy follows the information
+  available, so a takeoff from permit plans is a detailed estimate and should
+  be labeled that way.
+- **The takeoff is the "unit cost / bill of quantities" method:** break the
+  work into items, measure quantities, apply unit costs, add them up. This
+  tool produces the quantities; pricing comes after.
+- **Process:** plan the bid (scope, schedule, who does what), pre-bid
+  (subcontractors, quantity takeoffs, overhead), bid day (final pricing, error
+  check), and a post-bid review win or lose. Our post-bid review is running
+  `compare_to_reference.py` against the final order.
+- **Data sources, most to least reliable:** actual supplier/sub quotes, the
+  company's own history, then national averages such as RS Means.
+- **Price escalation:** about 3% per year unless told otherwise; adjust
+  national-average prices with a location factor.
+- **State inclusions and exclusions** on every estimate (the Estimator Notes
+  tab does this: what was assumed, what wasn't found, what's by others).
+- **Avoid scope gaps and double counting** between packages (e.g. framing vs.
+  truss supplier vs. steel supplier). Get at least three bids per subcontracted
+  scope.
