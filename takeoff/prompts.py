@@ -27,6 +27,15 @@ MEASURING CONVENTIONS (from the Basic Takeoff Guide, references/takeoff_guide.md
   to the inside, so corners aren't counted twice.
 - Keep separate: main vs garage, exterior vs interior vs common (house/garage)
   walls, and each building/zone.
+- Wall types, kept as separate runs: exterior (on the floor system, sheathed),
+  garage (on the garage foundation, treated bottom plate), common house/garage
+  walls (exterior = false: drywall both sides, no sheathing), interior 2x4,
+  interior 2x6, tall interior (vaulted), basement bearing walls, and basement
+  insulation walls against the foundation (is_furring = true).
+- For every wall run, count corners_intersections: each corner or point where
+  another wall meets it (2 extra studs each).
+- Roof: flat area includes overhangs; roof edge = eaves + rakes; ridge line
+  includes ridges that die into another roof.
 - Order of work: floor area, roof plan area, footings, foundation, interior
   walls, exterior walls, common walls, garage walls, roof edge (eaves/rakes),
   ridges/hips/valleys, door schedule, window schedule.

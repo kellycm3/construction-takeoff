@@ -62,9 +62,16 @@ FRAMING_EXTRA_DESCRIPTIONS = {"House Wrap", "House Wrap Tape"}
 # ---------------------------------------------------------------------------
 # Framing rules of thumb (tune to how your builders frame)
 # ---------------------------------------------------------------------------
-EXTRA_STUDS_PER_EXTERIOR_RUN = 2     # corner / end studs
-EXTRA_STUDS_PER_INTERIOR_RUN = 2     # intersection backing
-EXTRA_STUDS_PER_OPENING = 4          # 2 king + 2 jack
+# Stud count (BYU-Idaho Construction Estimating Reference Book method):
+#   studs = wall LF / spacing + 2 per corner or intersection
+#           + 2 per window/door under 6' wide + 6 per WINDOW 6' or wider
+#   (king studs come from the on-center studs left out of the opening)
+STUDS_PER_CORNER = 2
+STUDS_PER_OPENING_UNDER_6FT = 2
+STUDS_PER_WINDOW_6FT_PLUS = 6
+STUDS_PER_DOOR_6FT_PLUS = 0
+DEFAULT_CORNERS_PER_EXTERIOR_RUN = 1   # used only when the plans weren't counted (flagged)
+DEFAULT_INTERSECTIONS_PER_INTERIOR_LF = 0.1
 HEADER_PLIES = 2
 HEADER_BEARING_IN = 3                # added to rough opening width
 LVL_ABOVE_WIDTH_IN = 72              # openings wider than this get an LVL line (verify size!)
@@ -92,6 +99,13 @@ RIDGE_VENT_END_GAP_FT = 1.0          # stop ridge vent this far from each end
 # only "how much of the thing do we need" rules)
 # ---------------------------------------------------------------------------
 HOUSEWRAP_TAPE_LF_PER_SF = 0.15      # seam tape LF per SF of wall wrapped
+SIDING_WASTE_WALLS = 0.10            # book: rectangular wall areas
+SIDING_WASTE_GABLES = 0.30           # book: gables / triangles
+SIDING_MIN_OPENING_SF = 25           # book: only subtract openings 25 SF or larger
+SHINGLES_PER_BUNDLE = 27             # standard size (21 for metric)
+NAILS_PER_SHINGLE = 6
+ROOFING_NAILS_PER_BOX = 7200
+STARTER_ON_RAKES = False             # book: starter along horizontal edges only
 SHEATHING_CLIPS_PER_PANEL = 2        # only used when rafter spacing >= 24"
 
 # ---------------------------------------------------------------------------

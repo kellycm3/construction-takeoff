@@ -28,7 +28,8 @@ class WallRun(BaseModel):
     spacing_in: Optional[float] = Field(description="Stud spacing in inches. Null if not shown.")
     exterior: bool
     is_gable_end: bool = Field(description="True for the triangular gable wall above the plate line.")
-    is_furring: bool = Field(description="True for furring/strapping walls built against concrete (e.g. basement foundation walls): treated plates, drywall one side, no sheathing.")
+    is_furring: bool = Field(description="True for basement INSULATION walls built against concrete: single top plate, usually 24\" O.C., treated, drywall one side, no sheathing.")
+    corners_intersections: Optional[int] = Field(description="Number of corners and wall intersections along this run (each gets 2 extra studs). Count from the plan; null if unknown.")
     source: Source
 
 

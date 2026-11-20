@@ -65,6 +65,9 @@ class ZoneSummary:
     wall_net_sf: float = 0
     perimeter_lf: float = 0
     sill_lf: float = 0
+    gable_sf: float = 0
+    rect_wall_sf: float = 0       # exterior wall area (rectangles) incl. floor framing depth
+    big_openings_sf: float = 0    # exterior openings >= SIDING_MIN_OPENING_SF
 
 
 @dataclass
@@ -117,6 +120,20 @@ def _lvl_depth(text: Optional[str]) -> Optional[str]:
     t = text.replace("”", '"').replace("″", '"')
     m = re.search(r'1[ -]?3/4"?\s*[xX×]\s*([0-9]+(?:[ -][0-9]/[0-9]+)?)', t)
     return m.group(1).replace(" ", "-") if m else None
+
+
+def floor_depth_ft(member: Optional[str]) -> float:
+    """Height of a floor system (joist + 1-1/2\" sill + 3/4\" subfloor) for sheathing/wrap height."""
+    if not member:
+        return 0.0
+    t = member.lower().replace("”", '"')
+    nom = _nominal(t)
+    depth = {"2x8": 7.25, "2x10": 9.25, "2x12": 11.25}.get(nom) if nom else None
+    if depth is None:
+        m = re.search(r'(\d+)(?:[ -](\d)/(\d))?\s*"', t)
+        if m:
+            depth = int(m.group(1)) + (int(m.group(2)) / int(m.group(3)) if m.group(2) else 0)
+    return ((depth or 0) + 2.25) / 12 if depth else 0.0
 
 
 LVL_FOR_RAFTER = {"2x6": "9-1/4", "2x8": "9-1/4", "2x10": "11-7/8", "2x12": "14"}
@@ -226,7 +243,7 @@ def stud_lines(zone, trade, desc, nominal, height, count, waste, treated=False, 
 # Walls (trade 2)
 # ---------------------------------------------------------------------------
 def _walls(zone, walls: List[WallRun], openings: List[Opening], roofs: List[RoofPlane], on_slab: bool,
-           cat: Catalog, nb: NoteBook, summ: ZoneSummary) -> List[Line]:
+           cat: Catalog, nb: NoteBook, summ: ZoneSummary, floor_ft: float = 0.0) -> List[Line]:
     L: List[Line] = []
     T = 2
     ext = [w for w in walls if w.exterior and not w.is_gable_end and not w.is_furring]
@@ -289,14 +306,28 @@ def _walls(zone, walls: List[WallRun], openings: List[Opening], roofs: List[Roof
             nb.add(f"{zone}: wall height missing for '{w.label}' ({w.source.sheet}); studs/sheathing for it skipped.")
             continue
         n = studs_for_run(w.length_ft, spacing(w))
-        n += S.EXTRA_STUDS_PER_EXTERIOR_RUN if w.exterior else S.EXTRA_STUDS_PER_INTERIOR_RUN
+        corners = w.corners_intersections
+        if corners is None:
+            corners = S.DEFAULT_CORNERS_PER_EXTERIOR_RUN if w.exterior else round(w.length_ft * S.DEFAULT_INTERSECTIONS_PER_INTERIOR_LF)
+            nb.add(f"{zone}: corners/intersections not counted for '{w.label}'; estimated {corners}.")
+        n += corners * S.STUDS_PER_CORNER
         groups[(size(w), w.height_ft)] += n
     if groups:
         biggest = max(groups, key=groups.get)
-        groups[biggest] += sum(o.count for o in openings if o.kind != "opening") * S.EXTRA_STUDS_PER_OPENING
+        extra = 0
+        for o in openings:
+            if o.kind == "opening":
+                continue
+            if o.width_in < 72:
+                extra += S.STUDS_PER_OPENING_UNDER_6FT * o.count
+            elif o.kind == "window":
+                extra += S.STUDS_PER_WINDOW_6FT_PLUS * o.count
+            else:
+                extra += S.STUDS_PER_DOOR_6FT_PLUS * o.count
+        groups[biggest] += extra
     for (nom, h), count in groups.items():
         L += stud_lines(zone, T, "Studs", nom, h, count, S.WASTE["standard"],
-                        note=f"{_fmt(h)}' walls; incl. corners and king/jack studs", nb=nb)
+                        note=f"{_fmt(h)}' walls; +2 per corner/intersection and per opening", nb=nb)
 
     # --- Blocking (fireblocking / backing)
     if S.BLOCKING_ROWS:
@@ -364,20 +395,28 @@ def _walls(zone, walls: List[WallRun], openings: List[Opening], roofs: List[Roof
                       uom_text=f"{_fmt(sum(cuts))} LF", notes=[f"{len(cuts)} header plies nested on {stock:g}' boards"]))
 
     # --- Wall sheathing
-    gross = sum(w.length_ft * w.height_ft for w in ext if w.height_ft)
+    rect = sum(w.length_ft * (w.height_ft + floor_ft) for w in ext if w.height_ft)
+    gable_sf = 0.0
     for g in gables:
         h = g.height_ft
         if h is None:
             r = next((r for r in roofs if r.style == "gable"), None)
             h = gable_rise_ft(g.length_ft, (r.pitch_rise_per_12 or S.DEFAULT_PITCH)) if r else 0
-        gross += gable_area_sf(g.length_ft, h)
-    open_sf = sum(o.width_in * o.height_in * o.count for o in openings if o.exterior) / 144
+        gable_sf += gable_area_sf(g.length_ft, h)
+    gross = rect + gable_sf
+    ext_open = [o for o in openings if o.exterior]
+    open_sf = sum(o.width_in * o.height_in * o.count for o in ext_open) / 144
     net = max(gross - open_sf, 0)
     summ.wall_gross_sf += gross
     summ.wall_net_sf += net
+    summ.gable_sf += gable_sf
+    summ.rect_wall_sf += rect
+    summ.big_openings_sf += sum(o.width_in * o.height_in * o.count / 144 for o in ext_open
+                                if o.width_in * o.height_in / 144 >= S.SIDING_MIN_OPENING_SF)
     if net > 0:
         L.append(item(cat, zone, T, "Exterior Wall Sheathing", S.KEYS["wall_sheathing"], net, "SF", S.WASTE["sheathing"],
-                      note="Net of openings" + ("; includes gable ends" if gables else "")))
+                      note="Net of openings" + (f"; walls + {_fmt(floor_ft * 12)}\" floor framing to top of foundation" if floor_ft else "")
+                           + ("; includes gable ends" if gables else "")))
     return L
 
 
@@ -526,8 +565,9 @@ def _roof(zone, roofs: List[RoofPlane], cat: Catalog, nb: NoteBook) -> Tuple[Lis
             cover.append(item(cat, zone, T, "Ice & Water Barrier", S.KEYS["ice_barrier"], ib_sf, "SF", S.WASTE["none"],
                               note=f"{courses} course(s) at eaves to {S.ICE_BARRIER_INSIDE_WALL_IN}\" inside wall" +
                                    (" + valleys" if valley_lf else "")))
-        cover.append(item(cat, zone, T, "Starter Shingles", S.KEYS["starter_shingles"], eave_lf + rake_lf, "LF",
-                          S.WASTE["standard"], note="Eaves + rakes"))
+        starter_lf = eave_lf + (rake_lf if S.STARTER_ON_RAKES else 0)
+        cover.append(item(cat, zone, T, "Starter Shingles", S.KEYS["starter_shingles"], starter_lf, "LF",
+                          S.WASTE["standard"], note="Eaves + rakes" if S.STARTER_ON_RAKES else "Horizontal eaves"))
         cover.append(item(cat, zone, T, "Ridge Cap Shingles", S.KEYS["ridge_cap"], ridge_lf + hip_lf, "LF",
                           S.WASTE["standard"], note="Ridge + hips" if hip_lf else ""))
         vent_lf = max(ridge_lf - 2 * S.RIDGE_VENT_END_GAP_FT, 0)
@@ -538,7 +578,14 @@ def _roof(zone, roofs: List[RoofPlane], cat: Catalog, nb: NoteBook) -> Tuple[Lis
         if valley_lf:
             cover.append(Line(zone, T, "Valley Flashing", None, valley_lf, "LF", S.WASTE["standard"],
                               product_override="Valley flashing / W-valley", uom_text=f"{_fmt(valley_lf)} LF"))
-        cover.append(item(cat, zone, T, "Roofing Nails", S.KEYS["roofing_nails"], area, "SF", S.WASTE["standard"]))
+        sh = cat.get(S.KEYS["shingles"])
+        bundles = order_units(area, S.WASTE["standard"], sh.coverage_per_unit if sh else 33.33)
+        boxes = bundles * S.SHINGLES_PER_BUNDLE * S.NAILS_PER_SHINGLE / S.ROOFING_NAILS_PER_BOX
+        nl = item(cat, zone, T, "Roofing Nails", S.KEYS["roofing_nails"], boxes, "EA", S.WASTE["none"],
+                  note=f"{bundles} bundles x {S.SHINGLES_PER_BUNDLE} shingles x {S.NAILS_PER_SHINGLE} nails",
+                  uom_text=f"{_fmt(area)} SF")
+        nl.pieces = True
+        cover.append(nl)
     return frame, cover, footprint
 
 
@@ -576,7 +623,11 @@ def _floors(floors: List[FloorSystem], cat: Catalog, nb: NoteBook) -> List[Line]
         if f.subfloor:
             key = S.KEYS["subfloor_advantech"] if "advantech" in f.subfloor.lower() else S.KEYS["subfloor_plywood"]
             L.append(item(cat, z, T, "Subfloor", key, f.area_sf, "SF", S.WASTE["subfloor"], note=f.subfloor))
-            L.append(item(cat, z, T, "Subfloor Adhesive", S.KEYS["subfloor_adhesive"], f.area_sf, "SF", S.WASTE["standard"]))
+            tubes = (12 / s + 0.125) * f.area_sf / (3.14 * 28)  # book: 1 oz covers 3.14 LF of joist; 28 oz tube
+            al = item(cat, z, T, "Subfloor Adhesive", S.KEYS["subfloor_adhesive"], tubes, "EA", S.WASTE["standard"],
+                      note=f"Joists @ {s:g}\" O.C. + double beads at sheet ends", uom_text=f"{_fmt(f.area_sf)} SF")
+            al.pieces = True
+            L.append(al)
     return L
 
 
@@ -612,13 +663,23 @@ def _siding(zone, walls, openings, spec: Optional[ZoneSpec], roofs, summ: ZoneSu
                 soffit_sf += 2 * (r.building_length_ft + r.building_width_ft + 2 * o) * o
             else:
                 soffit_sf += 2 * (r.building_length_ft + (2 if not r.joins_other_roof_at_one_end else 1) * (r.overhang_rake_in or 0) / 12) * o
+    wall_sid = max(summ.rect_wall_sf - summ.big_openings_sf, 0)
+    gable_sid = summ.gable_sf
+
+    def siding_lines(key):
+        out = [item(cat, zone, T, "Siding (walls)", key, wall_sid, "SF", S.SIDING_WASTE_WALLS,
+                    note=f"Walls less openings of {S.SIDING_MIN_OPENING_SF}+ SF")]
+        if gable_sid:
+            out.append(item(cat, zone, T, "Siding (gables)", key, gable_sid, "SF", S.SIDING_WASTE_GABLES, note="Gables at 30% waste"))
+        return out
+
     if siding == "fiber_cement":
-        L.append(item(cat, zone, T, "Siding", S.KEYS["siding_fiber_cement"], net, "SF", S.WASTE["standard"], note="Net wall area incl. gables"))
+        L += siding_lines(S.KEYS["siding_fiber_cement"])
         L.append(item(cat, zone, T, "Starter Strip", S.KEYS["starter_fiber_cement"], summ.sill_lf, "LF", S.WASTE["standard"]))
         L.append(item(cat, zone, T, "Exterior Trim", S.KEYS["exterior_trim_fiber_cement"], corners * 2 * avg_h + casing_lf, "LF",
                       S.WASTE["standard"], note=f"{corners} corners x 2 boards + opening casings"))
     elif siding == "vinyl":
-        L.append(item(cat, zone, T, "Siding", S.KEYS["siding_vinyl"], net, "SF", S.WASTE["standard"], note="Net wall area incl. gables"))
+        L += siding_lines(S.KEYS["siding_vinyl"])
         L.append(item(cat, zone, T, "Starter Strip", S.KEYS["starter_vinyl"], summ.sill_lf, "LF", S.WASTE["standard"]))
         L.append(item(cat, zone, T, "J-Channel", S.KEYS["j_channel_vinyl"], casing_lf, "LF", S.WASTE["standard"], note="Around openings"))
     elif siding in ("brick", "wood", "other"):
@@ -771,7 +832,9 @@ def build_takeoff(data: PlanExtraction, cat: Catalog, scope: str = None) -> Take
         summ = ZoneSummary(z)
         summaries[z] = summ
         on_slab = z not in framed_floor_zones
-        lines += _walls(z, walls, opens, roofs, on_slab, cat, nb, summ)
+        zf = next((f for f in data.floors if f.zone == z), None)
+        floor_ft = floor_depth_ft(zf.joist_member) if zf else 0.0
+        lines += _walls(z, walls, opens, roofs, on_slab, cat, nb, summ, floor_ft)
         frame, cover, footprint = _roof(z, roofs, cat, nb)
         lines += frame + cover
         if scope == "full":

@@ -16,12 +16,12 @@ sill_seal_7_5x50,"Sill seal 7-1/2"" x 50'",PCS,50,LF,815423,
 shingles_gaf_charcoal,"Architectural asphalt shingles (bundle, 3 per square)",PCS,33.33,SF,775276,3 bundles per square
 ridge_cap_gaf_charcoal,Hip & ridge cap shingles (bundle),PCS,20,LF,1002079388,Coverage per bundle: verify on product page
 starter_gaf_charcoal,Starter strip shingles (bundle),PCS,120,LF,1001069805,Coverage per bundle: verify on product page
-underlayment_synthetic,"Synthetic roof underlayment, 10 sq roll",PCS,1000,SF,,
+underlayment_synthetic,"Synthetic roof underlayment, 10 sq roll",PCS,937.5,SF,,"10 sq roll covers ~937 SF with 3"" laps (book)"
 ice_water_weatherwatch,"Ice & water shield 36"" x 50' (150 SF)",PCS,150,SF,977115,
 ridge_vent_cobra_4ft,"Ridge vent, 4' section",PCS,4,LF,223180,
 drip_edge_white_10ft,"Drip edge, aluminum, 10'",PCS,10,LF,561967,
 step_flashing_4x4x8,Step flashing 4x4x8,PCS,1,EA,626124,Enter as piece count
-coil_roofing_nails_7200,"Coil roofing nails 1-1/4"" (7,200/box)",PCS,2400,SF,112525,Rule of thumb ~320 nails per square: verify
+coil_roofing_nails_7200,"Coil roofing nails 1-1/4"" (7,200/box)",PCS,2400,SF,112525,Boxes from bundles x 27 shingles x 6 nails (book)
 housewrap_tyvek_9x150,House wrap 9' x 150',PCS,1350,SF,641398,
 housewrap_tape_2x164,"House wrap tape 2"" x 164'",PCS,164,LF,176886,
 flashing_tape_6x50,"Window & door flashing tape 6"" x 50'",PCS,50,LF,1013936478,

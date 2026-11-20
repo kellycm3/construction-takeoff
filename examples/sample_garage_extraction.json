@@ -17,7 +17,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": 1
   },
   {
    "zone": "Main",
@@ -34,7 +35,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": 1
   },
   {
    "zone": "Main",
@@ -51,7 +53,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": 1
   },
   {
    "zone": "Main",
@@ -68,7 +71,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": 1
   },
   {
    "zone": "Main",
@@ -85,7 +89,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": null
   },
   {
    "zone": "Main",
@@ -102,7 +107,8 @@
     "measured_by_scale": false,
     "confidence": "high"
    },
-   "is_furring": false
+   "is_furring": false,
+   "corners_intersections": null
   }
  ],
  "openings": [
