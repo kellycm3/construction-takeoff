@@ -222,3 +222,32 @@ procedures.*
 - **Avoid scope gaps and double counting** between packages (e.g. framing vs.
   truss supplier vs. steel supplier). Get at least three bids per subcontracted
   scope.
+
+---
+
+## 6. Building code items that change quantities (IRC)
+
+*Source: International Residential Code (IRC), published by the International
+Code Council (https://codes.iccsafe.org/codes/i-codes). The code text is
+copyrighted by ICC and is NOT reproduced here; these are short notes in our
+own words pointing to sections, for estimating only. Always check the edition
+and local amendments the town has adopted. Illinois has no statewide
+residential building code (towns adopt their own; Chicago has its own code),
+so the plans' code notes and the local building department win.*
+
+| Topic | IRC section | What it means for the takeoff | In the tool |
+|---|---|---|---|
+| Ice barrier | R905.1.2 | Where ice dams are common (all of northern Illinois), self-adhered membrane from the eave edge to at least 24" inside the exterior wall line. On steeper or wider overhangs that's 2+ rows of 36" roll. | `ICE_BARRIER_*` settings compute rows from overhang and pitch |
+| Fireblocking | R602.8 | Concealed wall cavities blocked at each floor/ceiling and horizontally at intervals of 10' or less (2x lumber is acceptable). Tall/balloon walls need a row every 10'. | Blocking rows; extra rows on walls over 10' |
+| Decay protection | R317.1 | Wood on concrete or masonry (sills, plates on slabs, sleepers) and wood close to grade must be pressure treated or naturally durable, with some exceptions for an impervious barrier. | Treated sill/bottom plates on slab zones and furring walls |
+| Anchor bolts | R403.1.6 | Sill plates anchored with bolts at no more than 6' O.C., plus one near each end of every plate section; plans or local rules may require closer spacing. | Anchor bolt count from sill LF and number of runs |
+| Top plates | R602.3.2 | Double top plate, splices offset at least 24". | Plates bought as 16' stock with waste |
+| Headers | R602.7 | Header size and number of jack studs come from the span tables and loads; use what the plans call out. | Header callouts parsed from plans |
+| Wall bracing | R602.10 | Braced wall panels/continuous sheathing; affects sheathing type and hold-downs. | Not calculated; flag if plans call portal frames or hold-downs |
+| Ridge, hips, valleys | R802 | Ridge board at least as deep as the rafter cut; hip/valley members at least 2" nominal and as deep as the jack cuts (many plans upsize to LVL). | Hip/valley member from plans; LVL over 24' |
+| Rafter/ceiling ties | R802.5 | Ceiling joists or rafter ties required to resist outward thrust when there is no structural ridge. | Ceiling joists; bracing allowance |
+| Underlayment | R905.1.1 | Underlayment required under shingles; type and laps depend on slope. | Synthetic underlayment by area |
+| Drip edge | R905.2.8.5 | Drip edge at eaves and rake edges, lapped at joints. | Drip edge on eaves + rakes |
+| Water-resistive barrier | R703.2 | WRB (house wrap) required behind siding. | House wrap by wall area + gables |
+| Flashing | R703.4 | Flashing at windows, doors and wall/roof intersections. | Flashing tape; step flashing when shown |
+| Footings / frost depth | R403.1.4 | Footings below the local frost line (Chicago area typically 42"; confirm locally). | Not calculated (concrete) |

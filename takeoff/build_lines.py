@@ -296,6 +296,9 @@ def _walls(zone, walls: List[WallRun], openings: List[Opening], roofs: List[Roof
                           note="On concrete: treated" if pt else "Less door openings"))
     if seal_lf:
         L.append(item(cat, zone, T, "Sill Seal", S.KEYS["sill_seal"], seal_lf, "LF", S.WASTE["none"]))
+        bolts = math.ceil(seal_lf / S.ANCHOR_BOLT_MAX_OC_FT) + S.ANCHOR_BOLTS_EXTRA_PER_RUN * len(ext)
+        L.append(item(cat, zone, T, "Anchor Bolts", S.KEYS["anchor_bolt"], bolts, "EA", S.WASTE["none"],
+                      note=f"IRC R403.1.6: max {S.ANCHOR_BOLT_MAX_OC_FT}' O.C. + within 12\" of plate ends; use plan spacing if closer"))
     for nom, lf in top.items():
         L.append(run_line(zone, T, "Top Plates", nom, lf, S.WASTE["none"], note="Double top plate"))
 
@@ -333,7 +336,10 @@ def _walls(zone, walls: List[WallRun], openings: List[Opening], roofs: List[Roof
     if S.BLOCKING_ROWS:
         blk: Dict[str, float] = defaultdict(float)
         for w in ext + inner:
-            blk[size(w)] += w.length_ft * S.BLOCKING_ROWS
+            rows = S.BLOCKING_ROWS
+            if w.height_ft and w.height_ft > S.FIREBLOCK_MAX_FT:  # tall walls: a row every 10' (IRC R602.8)
+                rows = max(rows, math.ceil(w.height_ft / S.FIREBLOCK_MAX_FT) - 1)
+            blk[size(w)] += w.length_ft * rows
         for nom, lf in blk.items():
             L.append(run_line(zone, T, "Blocking", nom, lf, S.WASTE["standard"],
                               note=f"{S.BLOCKING_ROWS} row(s) per LF of wall"))
@@ -849,7 +855,7 @@ def build_takeoff(data: PlanExtraction, cat: Catalog, scope: str = None) -> Take
     lines += _floors(data.floors, cat, nb)
     lines += _others(data.other_items, cat, nb)
 
-    nb.add("Not auto-calculated: nails, screws, construction adhesive (except subfloor), anchor bolts. Add per builder preference.")
+    nb.add("Not auto-calculated: nails, screws, construction adhesive (except subfloor). Add per builder preference.")
     rows = [r for r in (_resolve(l) for l in lines) if in_scope(r, scope)]
     rows.sort(key=lambda r: (zones.index(r.zone) if r.zone in zones else 99, r.trade_no))
     return Takeoff(data.project_name, rows, nb.all(), summaries, zones, scope)

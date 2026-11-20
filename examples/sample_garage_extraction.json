@@ -208,21 +208,6 @@
  "other_items": [
   {
    "zone": "Main",
-   "trade_no": 2,
-   "material_key": "anchor_bolt_1_2x10",
-   "description": "Anchor bolts @ 6' O.C. + 12\" from corners",
-   "measure": 18,
-   "measure_unit": "EA",
-   "source": {
-    "sheet": "S1.1",
-    "source_note": "1/2\" A.B. @ 6'-0\" O.C.",
-    "measured_by_scale": false,
-    "confidence": "medium"
-   },
-   "piece_length_ft": null
-  },
-  {
-   "zone": "Main",
    "trade_no": 1,
    "material_key": "vapor_barrier_6mil",
    "description": "Vapor barrier under slab",

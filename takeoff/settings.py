@@ -78,6 +78,9 @@ LVL_ABOVE_WIDTH_IN = 72              # openings wider than this get an LVL line 
 DEFAULT_HEADER_NOMINAL = "2x10"
 FLY_RAFTERS_PER_GABLE_END = 2        # extra rafters for rake overhang / ladders
 BLOCKING_ROWS = 1                    # rows of solid blocking per LF of wall (fireblocking / backing)
+FIREBLOCK_MAX_FT = 10                # IRC R602.8: concealed wall cavities blocked at <= 10' intervals
+ANCHOR_BOLT_MAX_OC_FT = 6            # IRC R403.1.6: sill anchor bolts <= 6' O.C.
+ANCHOR_BOLTS_EXTRA_PER_RUN = 2       # IRC R403.1.6: one within 12" of each end of each plate section
 HIP_VALLEY_LVL_OVER_FT = 24          # hips/valleys longer than this become LVL (common plan note)
 SUBFLOOR_SF_PER_ADHESIVE_TUBE = 100  # 28 oz tube
 RIM_STOCK_FT = 16
@@ -147,6 +150,7 @@ KEYS = {
     "subfloor_plywood": "plywood_tg_3_4_4x8",
     "subfloor_advantech": "subfloor_advantech_23_32",
     "subfloor_adhesive": "adhesive_subfloor_28oz",
+    "anchor_bolt": "anchor_bolt_1_2x10",
 }
 
 # ---------------------------------------------------------------------------
