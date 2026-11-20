@@ -1,48 +1,243 @@
 {
-  "project_name": "SAMPLE - 20x24 Detached Garage",
-  "plan_scale": "1/4\" = 1'-0\"",
-  "walls": [
-    {"zone": "Main", "label": "North exterior", "length_ft": 24, "height_ft": 9, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": false,
-     "source": {"sheet": "A1.1", "source_note": "24'-0\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "label": "South exterior (garage door)", "length_ft": 24, "height_ft": 9, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": false,
-     "source": {"sheet": "A1.1", "source_note": "24'-0\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "label": "East exterior", "length_ft": 20, "height_ft": 9, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": false,
-     "source": {"sheet": "A1.1", "source_note": "20'-0\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "label": "West exterior", "length_ft": 20, "height_ft": 9, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": false,
-     "source": {"sheet": "A1.1", "source_note": "20'-0\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "label": "Gable - East", "length_ft": 20, "height_ft": null, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": true,
-     "source": {"sheet": "A2.1", "source_note": "East elevation, 5:12", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "label": "Gable - West", "length_ft": 20, "height_ft": null, "stud_size": "2x4", "spacing_in": 16, "exterior": true, "is_gable_end": true,
-     "source": {"sheet": "A2.1", "source_note": "West elevation, 5:12", "measured_by_scale": false, "confidence": "high"}}
-  ],
-  "openings": [
-    {"zone": "Main", "mark": "100", "kind": "overhead_door", "width_in": 192, "height_in": 84, "count": 1, "exterior": true,
-     "header_spec": "(2) 1-3/4\" x 18\" LVL", "schedule_specs": "Sectional insulated steel",
-     "source": {"sheet": "A1.1", "source_note": "Door schedule 100: 16'-0\" x 7'-0\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "mark": "101", "kind": "door", "width_in": 36, "height_in": 80, "count": 1, "exterior": true,
-     "header_spec": "(2) 2x10", "schedule_specs": "Single swing, steel, insulated",
-     "source": {"sheet": "A1.1", "source_note": "Door schedule 101: 3'-0\" x 6'-8\"", "measured_by_scale": false, "confidence": "high"}},
-    {"zone": "Main", "mark": "W1", "kind": "window", "width_in": 30, "height_in": 48, "count": 2, "exterior": true,
-     "header_spec": "(2) 2x10", "schedule_specs": "Single hung, vinyl, U=.28, SHGC=.35",
-     "source": {"sheet": "A1.1", "source_note": "Window schedule W1: 2'-6\" x 4'-0\"", "measured_by_scale": false, "confidence": "high"}}
-  ],
-  "roofs": [
-    {"zone": "Main", "style": "gable", "building_length_ft": 24, "building_width_ft": 20, "pitch_rise_per_12": 5,
-     "overhang_eave_in": 12, "overhang_rake_in": 12, "rafter_size": "2x6", "rafter_spacing_in": 16, "uses_trusses": false,
-     "ceiling_joist_size": "2x10", "covering": "Architectural asphalt shingles",
-     "source": {"sheet": "A2.1", "source_note": "5:12, 12\" O.H., 2x6 rafters @ 16\" O.C., 2x10 C.J.", "measured_by_scale": false, "confidence": "high"}}
-  ],
-  "zones": [
-    {"zone": "Main", "floor_area_sf": 480, "ceiling_area_sf": 480, "siding_type": "fiber_cement",
-     "wall_drywall": "1/2", "ceiling_drywall": "5/8_type_x",
-     "source": {"sheet": "A1.1", "source_note": "General notes 4 & 7", "measured_by_scale": false, "confidence": "high"}}
-  ],
-  "other_items": [
-    {"zone": "Main", "trade_no": 2, "material_key": "anchor_bolt_1_2x10", "description": "Anchor bolts @ 6' O.C. + 12\" from corners", "measure": 18, "measure_unit": "EA",
-     "source": {"sheet": "S1.1", "source_note": "1/2\" A.B. @ 6'-0\" O.C.", "measured_by_scale": false, "confidence": "medium"}},
-    {"zone": "Main", "trade_no": 1, "material_key": "vapor_barrier_6mil", "description": "Vapor barrier under slab", "measure": 480, "measure_unit": "SF",
-     "source": {"sheet": "S1.1", "source_note": "6 mil poly V.B.", "measured_by_scale": false, "confidence": "high"}}
-  ],
-  "not_found": ["Insulation (unconditioned garage)", "Paint schedule", "Slab concrete volume (by others)"],
-  "estimator_notes": ["SAMPLE DATA for testing the program. Not from a real plan set."]
+ "project_name": "SAMPLE - 20x24 Detached Garage",
+ "plan_scale": "1/4\" = 1'-0\"",
+ "walls": [
+  {
+   "zone": "Main",
+   "label": "North exterior",
+   "length_ft": 24,
+   "height_ft": 9,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": false,
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "24'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  },
+  {
+   "zone": "Main",
+   "label": "South exterior (garage door)",
+   "length_ft": 24,
+   "height_ft": 9,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": false,
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "24'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  },
+  {
+   "zone": "Main",
+   "label": "East exterior",
+   "length_ft": 20,
+   "height_ft": 9,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": false,
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "20'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  },
+  {
+   "zone": "Main",
+   "label": "West exterior",
+   "length_ft": 20,
+   "height_ft": 9,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": false,
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "20'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  },
+  {
+   "zone": "Main",
+   "label": "Gable - East",
+   "length_ft": 20,
+   "height_ft": null,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": true,
+   "source": {
+    "sheet": "A2.1",
+    "source_note": "East elevation, 5:12",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  },
+  {
+   "zone": "Main",
+   "label": "Gable - West",
+   "length_ft": 20,
+   "height_ft": null,
+   "stud_size": "2x4",
+   "spacing_in": 16,
+   "exterior": true,
+   "is_gable_end": true,
+   "source": {
+    "sheet": "A2.1",
+    "source_note": "West elevation, 5:12",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "is_furring": false
+  }
+ ],
+ "openings": [
+  {
+   "zone": "Main",
+   "mark": "100",
+   "kind": "overhead_door",
+   "width_in": 192,
+   "height_in": 84,
+   "count": 1,
+   "exterior": true,
+   "header_spec": "(2) 1-3/4\" x 18\" LVL",
+   "schedule_specs": "Sectional insulated steel",
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "Door schedule 100: 16'-0\" x 7'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   }
+  },
+  {
+   "zone": "Main",
+   "mark": "101",
+   "kind": "door",
+   "width_in": 36,
+   "height_in": 80,
+   "count": 1,
+   "exterior": true,
+   "header_spec": "(2) 2x10",
+   "schedule_specs": "Single swing, steel, insulated",
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "Door schedule 101: 3'-0\" x 6'-8\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   }
+  },
+  {
+   "zone": "Main",
+   "mark": "W1",
+   "kind": "window",
+   "width_in": 30,
+   "height_in": 48,
+   "count": 2,
+   "exterior": true,
+   "header_spec": "(2) 2x10",
+   "schedule_specs": "Single hung, vinyl, U=.28, SHGC=.35",
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "Window schedule W1: 2'-6\" x 4'-0\"",
+    "measured_by_scale": false,
+    "confidence": "high"
+   }
+  }
+ ],
+ "roofs": [
+  {
+   "zone": "Main",
+   "style": "gable",
+   "building_length_ft": 24,
+   "building_width_ft": 20,
+   "pitch_rise_per_12": 5,
+   "overhang_eave_in": 12,
+   "overhang_rake_in": 12,
+   "rafter_size": "2x6",
+   "rafter_spacing_in": 16,
+   "uses_trusses": false,
+   "ceiling_joist_size": "2x10",
+   "covering": "Architectural asphalt shingles",
+   "source": {
+    "sheet": "A2.1",
+    "source_note": "5:12, 12\" O.H., 2x6 rafters @ 16\" O.C., 2x10 C.J.",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "hip_valley_member": null,
+   "valleys": 0,
+   "joins_other_roof_at_one_end": false
+  }
+ ],
+ "zones": [
+  {
+   "zone": "Main",
+   "floor_area_sf": 480,
+   "ceiling_area_sf": 480,
+   "siding_type": "fiber_cement",
+   "wall_drywall": "1/2",
+   "ceiling_drywall": "5/8_type_x",
+   "source": {
+    "sheet": "A1.1",
+    "source_note": "General notes 4 & 7",
+    "measured_by_scale": false,
+    "confidence": "high"
+   }
+  }
+ ],
+ "other_items": [
+  {
+   "zone": "Main",
+   "trade_no": 2,
+   "material_key": "anchor_bolt_1_2x10",
+   "description": "Anchor bolts @ 6' O.C. + 12\" from corners",
+   "measure": 18,
+   "measure_unit": "EA",
+   "source": {
+    "sheet": "S1.1",
+    "source_note": "1/2\" A.B. @ 6'-0\" O.C.",
+    "measured_by_scale": false,
+    "confidence": "medium"
+   },
+   "piece_length_ft": null
+  },
+  {
+   "zone": "Main",
+   "trade_no": 1,
+   "material_key": "vapor_barrier_6mil",
+   "description": "Vapor barrier under slab",
+   "measure": 480,
+   "measure_unit": "SF",
+   "source": {
+    "sheet": "S1.1",
+    "source_note": "6 mil poly V.B.",
+    "measured_by_scale": false,
+    "confidence": "high"
+   },
+   "piece_length_ft": null
+  }
+ ],
+ "not_found": [
+  "Insulation (unconditioned garage)",
+  "Paint schedule",
+  "Slab concrete volume (by others)"
+ ],
+ "estimator_notes": [
+  "SAMPLE DATA for testing the program. Not from a real plan set."
+ ],
+ "floors": []
 }

@@ -28,6 +28,7 @@ class WallRun(BaseModel):
     spacing_in: Optional[float] = Field(description="Stud spacing in inches. Null if not shown.")
     exterior: bool
     is_gable_end: bool = Field(description="True for the triangular gable wall above the plate line.")
+    is_furring: bool = Field(description="True for furring/strapping walls built against concrete (e.g. basement foundation walls): treated plates, drywall one side, no sheathing.")
     source: Source
 
 
@@ -55,8 +56,23 @@ class RoofPlane(BaseModel):
     rafter_size: Optional[str] = Field(description="e.g. '2x6'. Null if trusses or not shown.")
     rafter_spacing_in: Optional[float]
     uses_trusses: bool
+    hip_valley_member: Optional[str] = Field(description="Hip/valley/ridge member as printed, e.g. '1-3/4x14 LVL' or '2x10'. Null if not shown.")
+    valleys: int = Field(description="Number of valleys where this roof meets another roof (0 if none)")
+    joins_other_roof_at_one_end: bool = Field(description="True if one end of this roof dies into another roof (no rake/gable at that end)")
     ceiling_joist_size: Optional[str] = Field(description="e.g. '2x10'. Null if none or not shown.")
     covering: Optional[str] = Field(description="Roof covering as noted, e.g. 'architectural asphalt shingles'")
+    source: Source
+
+
+class FloorSystem(BaseModel):
+    zone: str = Field(description="Zone whose FLOOR this is (e.g. '1st Floor' for the 1st floor deck)")
+    area_sf: float = Field(description="Framed floor area, outside of exterior walls")
+    perimeter_lf: Optional[float] = Field(description="Rim length (outside perimeter of the framed floor)")
+    joist_member: Optional[str] = Field(description="As printed, e.g. '2x10', '11-7/8\" TJI 110', '12\" open web'. Null if not shown.")
+    spacing_in: Optional[float]
+    typical_span_ft: Optional[float] = Field(description="Typical clear span of the joists in feet (bearing to bearing)")
+    subfloor: Optional[str] = Field(description="As printed, e.g. '3/4\" T&G plywood' or '23/32\" AdvanTech'")
+    new_framing: bool = Field(description="False if the plans keep existing joists (subfloor only or nothing)")
     source: Source
 
 
@@ -73,10 +89,11 @@ class ZoneSpec(BaseModel):
 class OtherItem(BaseModel):
     zone: str
     trade_no: int = Field(description="1 Floor System, 2 Wall, 3 Roof Framing, 4 Roofing, 5 Siding/Trim, 6 Deck, 7 Insulation, 8 Drywall, 9 Interior Finishes, 10 Windows, 11 Doors, 12 Paint")
-    material_key: str = Field(description="Must be one of the provided material_keys, or 'UNLISTED'")
+    material_key: str = Field(description="One of the provided material_keys; or 'lumber:<nominal>' / 'lumber:<nominal>:pt' for dimensional lumber (e.g. 'lumber:2x10:pt'); or 'UNLISTED'")
     description: str = Field(description="What it is and where, e.g. 'Floor joists 2x10 @ 16\" O.C.' or 'Interior wall paint'")
     measure: float = Field(description="The MEASUREMENT, not a piece count: LF of joists, SF of paint area, BF of spray foam, or EA for countable items")
     measure_unit: Literal["LF", "SF", "BF", "CY", "EA"]
+    piece_length_ft: Optional[float] = Field(description="For lumber given in LF: the length each piece must be (e.g. joist span). Null if not applicable.")
     source: Source
 
 
@@ -87,6 +104,7 @@ class PlanExtraction(BaseModel):
     openings: List[Opening]
     roofs: List[RoofPlane]
     zones: List[ZoneSpec]
+    floors: List[FloorSystem]
     other_items: List[OtherItem]
     not_found: List[str] = Field(description="Checklist items that are not shown on the plans")
     estimator_notes: List[str] = Field(description="Conflicts, ambiguities, assumptions, things to verify")

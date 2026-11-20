@@ -5,3 +5,5 @@ output/*
 plans/*
 !plans/.keep
 __pycache__/
+evals/*
+!evals/.keep

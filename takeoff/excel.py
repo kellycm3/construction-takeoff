@@ -31,7 +31,7 @@ def _tab(name: str) -> str:
 
 
 def _header(ws, project: str, order_id: str, title: str):
-    ws["A1"] = "Home Depot Material List"
+    ws["A1"] = "Material List"
     ws["A1"].font = Font(bold=True, size=14, color="F96302")
     ws["A2"], ws["C2"] = "Project Name:", project
     ws["A3"], ws["C3"] = "Order ID:", order_id
@@ -73,7 +73,7 @@ def _write_rows(ws, rows: List[Row], start: int = 9) -> int:
         for col in (11, 12):
             ws.cell(row=r, column=col).fill = GRAY
             ws.cell(row=r, column=col).font = Font(color="7F7F7F")
-        if "verify" in row.notes.lower() or "special order" in row.notes.lower() or "mismatch" in row.notes.lower():
+        if any(k in row.notes.lower() for k in ("verify", "special order", "mismatch", "not in materials")):
             ws.cell(row=r, column=10).fill = FLAG
         r += 1
     return r
@@ -119,7 +119,8 @@ def write_workbook(t: Takeoff, order_id: str, path: Path) -> Path:
     wb = Workbook()
     ws = wb.active
     ws.title = "General"
-    _header(ws, t.project_name, order_id, "General - Consolidated Material List (all zones)")
+    _header(ws, t.project_name, order_id,
+            f"General - Consolidated Material List (all zones){' - FRAMING ONLY' if t.scope == 'framing' else ''}")
     _write_rows(ws, _consolidate(t.rows))
 
     notes = wb.create_sheet("Estimator Notes")

@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE))
 
 from takeoff.build_lines import build_takeoff  # noqa: E402
 from takeoff.excel import write_workbook  # noqa: E402
-from takeoff.map_skus import Catalog  # noqa: E402
+from takeoff.materials import Catalog  # noqa: E402
 from takeoff.schemas import PlanExtraction  # noqa: E402
 
 
@@ -37,11 +37,11 @@ def _build(data: PlanExtraction, catalog: Catalog, args, out_dir: Path, base_nam
         data.project_name = args.project
     (out_dir / "final_extraction.json").write_text(data.model_dump_json(indent=2), encoding="utf-8")
     print("Calculating quantities and matching SKUs...")
-    takeoff = build_takeoff(data, catalog)
+    takeoff = build_takeoff(data, catalog, args.scope)
     xlsx = write_workbook(takeoff, args.order_id, out_dir / f"{base_name}_material_list.xlsx")
-    flagged = sum(1 for r in takeoff.rows if not r.sku)
+    special = sum(1 for r in takeoff.rows if "special order" in r.notes.lower())
     print(f"  Workbook:        {xlsx}")
-    print(f"  Line items:      {len(takeoff.rows)}  ({flagged} need a SKU from Pro Desk)")
+    print(f"  Line items:      {len(takeoff.rows)}  ({special} special order)  scope: {takeoff.scope}")
     print(f"  Estimator notes: {len(takeoff.notes)}  (read these before ordering)")
     return xlsx
 
@@ -55,7 +55,9 @@ def main():
     p.add_argument("--from-json", help="Skip the AI and build the workbook from a saved extraction JSON")
     p.add_argument("--project", help="Project name for the header (defaults to what's on the plans)")
     p.add_argument("--order-id", default="", help="Order / quote number for the header")
-    p.add_argument("--catalog", default=str(HERE / "references" / "home_depot_chicago_skus.csv"))
+    p.add_argument("--scope", choices=["full", "framing"], default=None,
+                   help="full = everything (default); framing = floor/wall/roof framing, sheathing, wrap, deck framing")
+    p.add_argument("--catalog", default=str(HERE / "references" / "materials.csv"))
     args = p.parse_args()
 
     if not args.pdf and not args.from_json:

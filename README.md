@@ -1,13 +1,13 @@
-# Construction Material Takeoff (Home Depot Chicago)
+# Construction Material Takeoff
 
-Drop in a plan PDF and get back a Home Depot material list workbook in your Blueprint-Takeoff layout, with SKUs, waste factors, and estimator notes.
+Drop in a plan PDF and get back a material list workbook (material + size + quantity) in the Blueprint-Takeoff layout, with waste factors and estimator notes. Covers floor, wall and roof framing (including hip roofs, jacks, hips/valleys, LVLs and floor systems), sheathing, wrap, roofing, siding, drywall, insulation, windows and doors.
 
 **How it works**
 
 1. **Gemini or Claude (your choice) reads the plans.** It reports only measurements: wall lengths and heights, openings from the schedules, roof pitch and overhangs, and drywall and siding types. Every value cites the sheet it came from.
 2. **The same AI checks its own read.** A second pass compares the read against the plans (perimeter, schedules, gable ends, checklist), then fixes anything it finds.
 3. **Python does the math.** Studs, sheets, bundles, and waste all come from fixed rules, so the same plans always give the same numbers.
-4. **Python looks up the SKUs** in your catalog file. If an item isn't in the catalog, its SKU is left blank and the line is flagged for Pro Desk. The program never makes up a SKU.
+4. **Lumber is sized automatically** (precut studs by wall height, shortest stock length per cut, nested short cuts, 26'-28' special-order lengths, LVL where called for). Other materials come from `references/materials.csv`, which says what one unit covers. SKUs are optional.
 5. **Excel workbook.** You get a General tab, an Estimator Notes tab, and one tab per zone and trade.
 
 ---
@@ -25,6 +25,8 @@ Drop in a plan PDF and get back a Home Depot material list workbook in your Blue
 ## Running a takeoff
 
 **Drag a plan PDF onto `takeoff.bat`.** It asks which AI to use (`gemini`, `claude`, or `both`), then for a project name and order ID; press Enter to skip any of them. When it's done, the `output` folder opens.
+
+**Framing only:** add `--scope framing` to leave out roofing, siding, drywall, finishes, windows and doors.
 
 **`both`** runs Gemini and Claude on the same PDF, saves a workbook from each (in `gemini` and `claude` subfolders), and prints where their quantities disagree. Those lines are the ones worth checking against the plans.
 
@@ -58,14 +60,25 @@ Test it on your own plans rather than going on reputation:
 
 Claude accepts PDFs up to 32 MB. Split bigger plan sets into smaller files.
 
+## Knowledge base
+
+`references/takeoff_guide.md` holds the measuring rules the tool follows (from the Basic Takeoff Guide) and lessons learned from scored jobs. Add to it as you go.
+
+## Measuring undimensioned walls
+
+```
+.venv\Scripts\python tools\measure_walls.py plans.pdf --page 6 --scale 0.25
+```
+Measures shaded walls off a plan sheet by scale and reports LF of 2x4 and 2x6 walls. It saves a picture of what it measured so you can check it.
+
 ## Before you trust it on a real order
 
-1. **Verify the catalog.** Open `references\home_depot_chicago_skus.csv` in Excel. For each row, confirm the SKU and the `coverage_per_unit` (sq ft per bundle, LF per roll, and so on), then put today's date in `verified_date`. Until a row has a date, its lines say "SKU not yet verified". Several coverage numbers are rules of thumb and are marked in the notes column. One SKU looks suspicious: the non-vented soffit is one digit off the vented one.
+1. **Check coverage numbers.** Open `references\materials.csv` and confirm `coverage_per_unit` for each material (sq ft per bundle, LF per roll, and so on). Several are rules of thumb and are marked in the notes column.
 2. **Score it against a takeoff you trust.** Put the plans and your finished Blueprint-Takeoff-11403 workbook in `evals\`, run a takeoff on those plans, then:
    ```
    .venv\Scripts\python compare_to_reference.py output\<run folder>\<name>_material_list.xlsx evals\Blueprint-Takeoff-11403.xlsx
    ```
-   It matches lines by SKU and lists what's within 5%, what's off, what's missing, and what's extra. Use those results to tune `settings.py`.
+   It matches lines by **material and size** (so different wording or sourcing still lines up), and also totals by family (all 2x6 studs, all 2x10 lumber, all OSB...). Reference can be an Excel takeoff or a CSV with `product,qty` columns. Use the results to tune `settings.py`. Keep client plans and takeoffs in `evals\`; that folder is never uploaded to GitHub.
 3. **Check repeatability.** Run the same plans 2 or 3 times. Every number comes from Gemini's measurements, so if a trade swings between runs, open the `final_extraction.json` files and compare what Gemini read.
 
 ## Tuning
@@ -77,15 +90,15 @@ To re-run only the math after a tweak, without paying for Gemini again:
 .venv\Scripts\python run_takeoff.py --from-json output\<run folder>\final_extraction.json --project "Name" --order-id 123
 ```
 
-**Adding products:** add a row to the CSV. For lumber, fill in `category` = `lumber`, `nominal` (like `2x6`), `length_ft`, and `treated` (yes/no). The program automatically picks the shortest board that fits each cut. For example, add a 2x6x14 and the sample garage's rafters drop from 16' to 14' boards.
+**Adding materials:** add a row to `materials.csv` (description, unit, coverage per unit). Lumber doesn't need rows: sizes and stock lengths are in `settings.py` (`STOCK_LENGTHS_FT`, `PRECUT_STUDS_IN`, `SPECIAL_ORDER_LENGTHS_FT`).
 
 ## What it calculates vs. what it flags
 
-**Calculated automatically:** sill plates and sill seal, top and bottom plates, studs (with corners and king/jack studs), gable studs, headers (cut-optimized), wall and roof sheathing, rafters, ridge, sub fascia, ceiling joists, hurricane ties, shingles, underlayment, ice and water barrier (to code, 24" inside the wall), starter, ridge cap, ridge vent, drip edge, roofing nails, house wrap and tape, flashing tape, cap nails, fiber cement or vinyl siding, starter strip, trim, J-channel, eave soffit, drywall (walls and ceilings by type), tape, mud, and screws.
+**Calculated automatically:** sill plates (treated on slab) and sill seal, top and bottom plates, studs by wall height (with corners and king/jack studs), blocking, basement furring walls, gable studs, headers (ply count and LVL depth from the callout), wall and roof sheathing, floor joists, rim and subfloor, gable and hip roof framing (commons, jacks, hips, valleys, ridge, LVL over 24'), sub fascia, rake boards, soffit framing, roof bracing allowance, ceiling joists, hurricane ties, shingles, underlayment, ice and water barrier (to code, 24" inside the wall), starter, ridge cap, ridge vent, drip edge, roofing nails, house wrap and tape, flashing tape, cap nails, fiber cement or vinyl siding, starter strip, trim, J-channel, eave soffit, drywall (walls and ceilings by type), tape, mud, and screws.
 
-**Measured by Gemini, priced by catalog:** floor systems, decks, insulation, paint, interior trim, foundation items. Gemini reports the LF, SF, or count, and Python converts it to orderable units.
+**Measured by the AI, converted by the program:** decks, insulation, paint, interior trim, foundation items. Gemini reports the LF, SF, or count, and Python converts it to orderable units.
 
-**Flagged for you:** windows and doors (special order, with their schedule specs), trusses, hip roof framing, brick or other siding, and fasteners and adhesive.
+**Flagged for you:** windows and doors (special order, with their schedule specs), trusses and engineered joists (confirm with the manufacturer layout), brick or other siding, nails and screws.
 
 ## Troubleshooting
 

@@ -18,6 +18,20 @@ COMPLETENESS CHECKLIST (each item must be captured somewhere, or listed in not_f
 - Step flashing, valleys, or other roofing details where shown
 """
 
+CONVENTIONS = """\
+MEASURING CONVENTIONS (from the Basic Takeoff Guide, references/takeoff_guide.md):
+- Main and garage floor areas: measure to the OUTSIDE of exterior walls. Break
+  odd shapes into rectangles and add them up.
+- Basement floor area: measure to the INSIDE of the foundation walls.
+- Footings / foundation length: horizontal runs to the outside, vertical runs
+  to the inside, so corners aren't counted twice.
+- Keep separate: main vs garage, exterior vs interior vs common (house/garage)
+  walls, and each building/zone.
+- Order of work: floor area, roof plan area, footings, foundation, interior
+  walls, exterior walls, common walls, garage walls, roof edge (eaves/rakes),
+  ridges/hips/valleys, door schedule, window schedule.
+"""
+
 EXTRACTION_PROMPT = f"""\
 You are a residential / light-commercial estimator reading construction plans.
 Report ONLY what is written or drawn on the plans. Do NOT calculate piece counts,
@@ -33,11 +47,19 @@ Work in this order:
 5. Roof: style, footprint, pitch, overhangs, framing size and spacing.
    Add each gable-end triangle as its own WallRun (is_gable_end = true).
 6. Fill one ZoneSpec per zone (siding type, drywall types, floor and ceiling area).
+   Fill one FloorSystem per framed floor (joist member, spacing, typical span,
+   rim length, subfloor). Use new_framing = false where existing joists remain.
+   A zone with NO FloorSystem is treated as slab-on-grade (treated sill plates).
+   Mark basement walls built against concrete as is_furring = true.
+   For each roof: hip/valley member as printed, number of valleys, and whether
+   one end dies into another roof.
 7. Use other_items ONLY for things not already covered by walls, openings, roofs,
    and zones (floor system, deck, insulation, paint, interior trim, foundation,
    step flashing, etc.). Give a MEASUREMENT (LF, SF, BF, CY) or an EA count.
-   Choose material_key from the list below; use 'UNLISTED' if nothing fits and
-   describe it fully.
+   Choose material_key from the list below. For dimensional lumber use
+   'lumber:<nominal>' or 'lumber:<nominal>:pt' (e.g. 'lumber:2x10:pt') with
+   measure in LF and piece_length_ft = the length each piece must be.
+   Use 'UNLISTED' if nothing fits and describe it fully (material and size).
 8. Walk the checklist. Anything not shown on the plans goes in not_found.
 9. Cite the sheet and the exact dimension string or callout for every value.
 
@@ -48,6 +70,7 @@ Rules:
 - Convert feet-inches to decimal feet (24'-6" = 24.5).
 - Use consistent zone names (e.g. "Main", "STORAGE").
 
+{CONVENTIONS}
 {CHECKLIST}
 """
 

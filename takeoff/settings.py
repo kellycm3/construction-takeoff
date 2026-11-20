@@ -25,6 +25,8 @@ WASTE = {
     "drywall_finish": 0.05,  # tape, joint compound
     "standard": 0.10,    # studs, subfloor, shingles, nails, drywall, trim, siding, soffit
     "sheathing": 0.12,   # OSB wall & roof sheathing
+    "subfloor": 0.10,    # floor sheathing
+    "rafters_hip": 0.10, # hip/valley roofs: jacks cut from longer stock
 }
 
 # ---------------------------------------------------------------------------
@@ -36,6 +38,26 @@ DEFAULT_RAFTER_SPACING_IN = 16
 DEFAULT_PITCH = 5.0          # rise per 12
 DEFAULT_OVERHANG_IN = 12
 DEFAULT_STUD_SIZE = "2x4"
+DEFAULT_RAFTER_SIZE = "2x8"         # only if the plans give no rafter size (flagged)
+
+# ---------------------------------------------------------------------------
+# Lumber
+# ---------------------------------------------------------------------------
+LUMBER_GRADE = "#2 SPF"                   # how plain dimensional lumber is described
+STOCK_LENGTHS_FT = (8, 10, 12, 14, 16, 18, 20, 22, 24)
+LONGEST_DIMENSIONAL_FT = 24               # longer than this -> special order length
+SPECIAL_ORDER_LENGTHS_FT = (26, 28, 30, 32)  # available by special order; longer -> LVL/splice
+PRECUT_STUDS_IN = {"92-5/8": 92.625, "104-5/8": 104.625, "116-5/8": 116.625}
+LVL_STOCK_LENGTHS_FT = (8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32)
+
+# ---------------------------------------------------------------------------
+# What's included. "framing" = floor, wall and roof framing, sheathing, wrap,
+# deck framing. "full" adds roofing, siding/trim, insulation, drywall,
+# finishes, windows, doors and paint.
+# ---------------------------------------------------------------------------
+DEFAULT_SCOPE = "full"
+FRAMING_TRADES = {1, 2, 3, 6}
+FRAMING_EXTRA_DESCRIPTIONS = {"House Wrap", "House Wrap Tape"}
 
 # ---------------------------------------------------------------------------
 # Framing rules of thumb (tune to how your builders frame)
@@ -48,6 +70,14 @@ HEADER_BEARING_IN = 3                # added to rough opening width
 LVL_ABOVE_WIDTH_IN = 72              # openings wider than this get an LVL line (verify size!)
 DEFAULT_HEADER_NOMINAL = "2x10"
 FLY_RAFTERS_PER_GABLE_END = 2        # extra rafters for rake overhang / ladders
+BLOCKING_ROWS = 1                    # rows of solid blocking per LF of wall (fireblocking / backing)
+HIP_VALLEY_LVL_OVER_FT = 24          # hips/valleys longer than this become LVL (common plan note)
+SUBFLOOR_SF_PER_ADHESIVE_TUBE = 100  # 28 oz tube
+RIM_STOCK_FT = 16
+SUB_FASCIA_NOMINAL = "2x6"
+SOFFIT_FRAMING_LF_PER_EAVE_LF = 2.0  # 2x4 soffit ledger + lookouts (0 to turn off)
+SOFFIT_FRAMING_NOMINAL = "2x4"
+ROOF_BRACING_PCS_PER_100SF = 0.9     # 16' braces per 100 SF of roof, each of 2x4 and 2x6 (0 to turn off)
 
 # ---------------------------------------------------------------------------
 # Roofing
@@ -66,7 +96,7 @@ SHEATHING_CLIPS_PER_PANEL = 2        # only used when rafter spacing >= 24"
 
 # ---------------------------------------------------------------------------
 # Which catalog item to use for each job. Must match material_key values in
-# references/home_depot_chicago_skus.csv. Swap these to change products.
+# references/materials.csv. Swap these to change products.
 # ---------------------------------------------------------------------------
 KEYS = {
     "sill_seal": "sill_seal_5_5x50",
@@ -100,7 +130,9 @@ KEYS = {
     "joint_compound": "joint_compound_4_5gal",
     "drywall_screws_1_2": "drywall_screws_1_25_25lb",
     "drywall_screws_5_8": "drywall_screws_1_625_25lb",
-    "framing_nails": "framing_nails_16d",
+    "subfloor_plywood": "plywood_tg_3_4_4x8",
+    "subfloor_advantech": "subfloor_advantech_23_32",
+    "subfloor_adhesive": "adhesive_subfloor_28oz",
 }
 
 # ---------------------------------------------------------------------------

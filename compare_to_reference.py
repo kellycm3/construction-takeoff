@@ -1,28 +1,38 @@
 """
-Score a generated takeoff against one you trust (e.g. Blueprint-Takeoff-11403).
+Score a generated takeoff against one you trust, by MATERIAL AND SIZE.
 
 Usage:
-  python compare_to_reference.py output\\<run>\\<name>_material_list.xlsx evals\\Blueprint-Takeoff-11403.xlsx
+  python compare_to_reference.py <generated.xlsx> <reference.xlsx | reference.csv>
 
-Lines are matched by SKU on each workbook's General tab. Items without a SKU
-can't be matched automatically, so they're listed separately for a manual look.
+Reference can be an Excel takeoff (header row with "Product" and "Adjusted
+Quantity" or "Quantity") or a CSV with columns: product, qty.
+Both sides are reduced to keys like "2x6x16 PT", "stud 2x6 104-5/8",
+"OSB 7/16 4x8", "LVL 11-7/8 x 20", then quantities are compared.
+Also prints totals by family (all 2x6 studs, all 2x10 lumber, ...), which
+shows whether a miss is the wrong length or a wrong overall amount.
 """
+import csv
 import math
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 from openpyxl import load_workbook
 
-TOLERANCE = 0.05  # within 5% counts as a match
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from takeoff.normalize import material_key  # noqa: E402
+
+TOLERANCE = 0.10
 
 
-def _find_header(ws):
-    for row in ws.iter_rows(min_row=1, max_row=30):
+def _header(ws):
+    for row in ws.iter_rows(min_row=1, max_row=40):
         names = [str(c.value).strip().lower() if c.value is not None else "" for c in row]
-        if "sku" in names:
+        if "product" in names or "home depot product" in names:
             return row[0].row, names
-    raise SystemExit(f"Couldn't find a header row with 'SKU' on sheet '{ws.title}'.")
+    raise SystemExit(f"No header row with 'Product' on sheet '{ws.title}'.")
 
 
 def _sheet(wb):
@@ -31,91 +41,101 @@ def _sheet(wb):
 
 def read_generated(path):
     ws = _sheet(load_workbook(path))
-    hdr, names = _find_header(ws)
+    hdr, names = _header(ws)
     i = {n: names.index(n) for n in names if n}
-    out, nosku = defaultdict(float), []
-    read_generated.names = {}
+    out, names_by_key = defaultdict(float), {}
     for row in ws.iter_rows(min_row=hdr + 1, values_only=True):
         if not row or row[i["product"]] is None:
             continue
-        measure, cov, waste = row[i["calc: measure"]], row[i["calc: coverage / unit"]], row[i["waste factor"]] or 0
-        if measure is None or not cov:
+        m, cov, w = row[i["calc: measure"]], row[i["calc: coverage / unit"]], row[i["waste factor"]] or 0
+        if m is None or not cov:
             continue
-        qty = math.ceil(round(measure * (1 + waste) / cov, 6))
-        sku = str(row[i["sku"]] or "").strip()
-        if sku:
-            out[sku] += qty
-            read_generated.names[sku] = row[i["product"]]
-        else:
-            nosku.append((row[i["product"]], qty))
-    return out, nosku
+        k = material_key(row[i["product"]])
+        out[k] += math.ceil(round(m * (1 + w) / cov, 6))
+        names_by_key.setdefault(k, row[i["product"]])
+    return out, names_by_key
 
 
 def read_reference(path):
-    ws = _sheet(load_workbook(path, data_only=True))
-    hdr, names = _find_header(ws)
-    qcol = names.index("adjusted quantity") if "adjusted quantity" in names else names.index("quantity")
-    scol, pcol = names.index("sku"), names.index("product") if "product" in names else None
-    out, products = defaultdict(float), {}
-    for row in ws.iter_rows(min_row=hdr + 1, values_only=True):
-        sku = str(row[scol] or "").strip().split(".")[0]
-        q = row[qcol]
-        if sku and isinstance(q, (int, float)):
-            out[sku] += q
-            if pcol is not None:
-                products[sku] = row[pcol]
-    return out, products
-
-
-def read_any(path):
-    """A workbook from this program (formula columns) or one built by hand / saved by Excel."""
-    ws = _sheet(load_workbook(path))
-    _, names = _find_header(ws)
+    path = Path(path)
+    out, names_by_key = defaultdict(float), {}
+    if path.suffix.lower() == ".csv":
+        for r in csv.DictReader(open(path, newline="", encoding="utf-8-sig")):
+            k = material_key(r["product"])
+            out[k] += float(r["qty"])
+            names_by_key.setdefault(k, r["product"])
+        return out, names_by_key
+    wb = load_workbook(path, data_only=True)
+    ws = _sheet(wb)
+    hdr, names = _header(ws)
     if "calc: measure" in names:
-        gen, _ = read_generated(path)
-        return gen, dict(read_generated.names)
-    return read_reference(path)
+        return read_generated(path)
+    pcol = names.index("product") if "product" in names else names.index("home depot product")
+    qcol = next(names.index(n) for n in ("adjusted quantity", "total qty", "quantity", "qty") if n in names)
+    for row in ws.iter_rows(min_row=hdr + 1, values_only=True):
+        p, q = row[pcol], row[qcol]
+        if p and isinstance(q, (int, float)):
+            k = material_key(p)
+            out[k] += q
+            names_by_key.setdefault(k, p)
+    return out, names_by_key
 
 
-def compare(generated_path, reference_path):
-    gen, nosku = read_generated(Path(generated_path))
-    ref, names = read_any(Path(reference_path))
+def family(k: str) -> str:
+    m = re.match(r"(stud 2x\d)", k)
+    if m:
+        return m.group(1) + (" PT" if k.endswith("PT") else "") + " (all heights)"
+    m = re.match(r"(\d x\d+|\dx\d+)x\d+( PT)?", k)
+    if m:
+        return k.split("x")[0] + "x" + k.split("x")[1] + (" PT" if "PT" in k else "") + " lumber (all lengths, pcs)"
+    if k.startswith("LVL"):
+        return "LVL (all, pcs)"
+    if k.startswith("OSB") or k.startswith("plywood") or k.startswith("subfloor"):
+        return k.split()[0] + " sheets"
+    if k.startswith("drywall"):
+        return k
+    return k
 
-    good, off, missed, extra = [], [], [], []
-    for sku, rq in ref.items():
-        if sku not in gen:
-            missed.append((sku, names.get(sku, ""), rq))
-            continue
-        gq = gen[sku]
-        diff = (gq - rq) / rq if rq else 0
-        (good if abs(diff) <= TOLERANCE else off).append((sku, names.get(sku, ""), rq, gq, diff))
-    for sku, gq in gen.items():
-        if sku not in ref:
-            extra.append((sku, gq))
 
-    total = len(ref) or 1
-    print(f"\nReference lines: {len(ref)}")
-    print(f"  Within {TOLERANCE:.0%}:  {len(good)}  ({len(good) / total:.0%})")
-    print(f"  Off by more:  {len(off)}")
-    print(f"  Missed:       {len(missed)}")
-    print(f"  Extra (generated, not in reference): {len(extra)}")
-    if off:
-        print("\nOFF (reference -> generated):")
-        for sku, n, rq, gq, d in sorted(off, key=lambda x: -abs(x[4])):
-            print(f"  {sku:>11}  {str(n)[:50]:50}  {rq:>6g} -> {gq:>6g}  ({d:+.0%})")
-    if missed:
-        print("\nMISSED:")
-        for sku, n, rq in missed:
-            print(f"  {sku:>11}  {str(n)[:50]:50}  ref qty {rq:g}")
-    if extra:
-        print("\nEXTRA:")
-        for sku, gq in extra:
-            print(f"  {sku:>11}  qty {gq:g}")
-    if nosku:
-        print("\nGenerated lines with no SKU (check by hand):")
-        for p, q in nosku:
-            print(f"  {str(p)[:70]:70}  qty {q:g}")
-    return {"within": len(good), "off": len(off), "missed": len(missed), "extra": len(extra), "total": len(ref)}
+def compare(generated, reference, show=True):
+    gen, gnames = read_generated(Path(generated))
+    ref, rnames = read_reference(Path(reference))
+    rows = []
+    for k in sorted(set(gen) | set(ref)):
+        rq, gq = ref.get(k, 0), gen.get(k, 0)
+        rows.append((k, rq, gq))
+    within = sum(1 for k, r, g in rows if r and g and abs(g - r) / r <= TOLERANCE)
+    missed = [x for x in rows if x[1] and not x[2]]
+    extra = [x for x in rows if x[2] and not x[1]]
+    off = [x for x in rows if x[1] and x[2] and abs(x[2] - x[1]) / x[1] > TOLERANCE]
+
+    fam_r, fam_g = defaultdict(float), defaultdict(float)
+    for k, r, g in rows:
+        fam_r[family(k)] += r
+        fam_g[family(k)] += g
+    fams = [(f, fam_r[f], fam_g[f]) for f in fam_r if fam_r[f] or fam_g[f]]
+    fam_ok = sum(1 for f, r, g in fams if r and abs(g - r) / r <= 0.15)
+    fam_ref = sum(1 for f, r, g in fams if r)
+
+    if show:
+        n = len([x for x in rows if x[1]]) or 1
+        print(f"\nReference material/size lines: {n}")
+        print(f"  Within {TOLERANCE:.0%}: {within} ({within / n:.0%})   Off: {len(off)}   Missing: {len(missed)}   Extra: {len(extra)}")
+        print(f"  Families within 15% (e.g. all 2x6 studs, all 2x10 lumber): {fam_ok} of {fam_ref}")
+        print("\nBY FAMILY (reference -> generated):")
+        for f, r, g in sorted(fams, key=lambda x: -max(x[1], x[2])):
+            d = f"{(g - r) / r:+.0%}" if r else "extra"
+            print(f"  {f[:46]:46} {r:>7g} -> {g:>7g}  {d}")
+        print("\nOFF BY MORE THAN 10%:")
+        for k, r, g in sorted(off, key=lambda x: -abs(x[2] - x[1])):
+            print(f"  {k[:40]:40} {r:>7g} -> {g:>7g}  ({(g - r) / r:+.0%})")
+        print("\nMISSING:")
+        for k, r, g in sorted(missed, key=lambda x: -x[1]):
+            print(f"  {k[:40]:40} ref {r:g}   ({str(rnames.get(k, ''))[:45]})")
+        print("\nEXTRA (generated only):")
+        for k, r, g in sorted(extra, key=lambda x: -x[2]):
+            print(f"  {k[:40]:40} gen {g:g}")
+    return {"within": within, "lines": len([x for x in rows if x[1]]), "fam_ok": fam_ok, "fam_total": fam_ref}
 
 
 def main():
