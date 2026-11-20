@@ -1,0 +1,78 @@
+material_key,sku,product_title,unit,coverage_per_unit,coverage_unit,category,nominal,length_ft,treated,verified_date,notes
+sill_plate_2x4x16_pt,1001753869,2 in. x 4 in. x 16 ft. #2 Prime Ground Contact Pressure-Treated SYP Lumber,PCS,16,LF,lumber,2x4,16,yes,,
+lumber_2x4x16_spf,1008209670,2 in. x 4 in. x 16 ft. #2 Standard Grade SPF Dimensional Lumber,PCS,16,LF,lumber,2x4,16,no,,
+stud_2x4x92_5_8_ww,569062,2 in. x 4 in. x 92-5/8 in. #2 Premium Grade Whitewood Stud,PCS,1,EA,stud,2x4,7.7188,no,,
+stud_2x4x104_5_8_ww,832150,2 in. x 4 in. x 104-5/8 in. #2 Premium Grade Whitewood Stud,PCS,1,EA,stud,2x4,8.7188,no,,
+stud_2x4x104_5_8_pt,1001753748,2x4x104-5/8 in. #2 SPF Pressure-Treated Stud,PCS,1,EA,stud,2x4,8.7188,yes,,
+stud_2x6x104_5_8_spf,1007603771,2 in. x 6 in. x 104-5/8 in. SPF #2 Standard Grade Dimensional Lumber,PCS,1,EA,stud,2x6,8.7188,no,,
+lumber_2x6x12_spf,161756,2 in. x 6 in. x 12 ft. #2 Premium Grade SPF Dimensional Lumber,PCS,12,LF,lumber,2x6,12,no,,
+lumber_2x6x16_spf,1008224253,2 in. x 6 in. x 16 ft. #2 Standard Grade SPF Dimensional Lumber,PCS,16,LF,lumber,2x6,16,no,,
+lumber_2x8x16_syp,581968,2 in. x 8 in. x 16 ft. #2 Premium Grade SYP Dimensional Lumber,PCS,16,LF,lumber,2x8,16,no,,
+lumber_2x8x18_gdf,1009714202,2 in. x 8 in. x 18 ft. GDF #2 Standard Grade Dimensional Lumber,PCS,18,LF,lumber,2x8,18,no,,
+lumber_2x8x20_fir,1012206858,2 in. x 8 in. x 20 ft. FIR #2 Standard Grade Dimensional Lumber,PCS,20,LF,lumber,2x8,20,no,,
+lumber_2x10x12_syp,852554,2 in. x 10 in. x 12 ft. #2 Premium Grade SYP Dimensional Lumber,PCS,12,LF,lumber,2x10,12,no,,
+lumber_2x10x16_syp,852562,2 in. x 10 in. x 16 ft. #2 Premium Grade SYP Dimensional Lumber,PCS,16,LF,lumber,2x10,16,no,,
+lumber_2x10x16_df,1000018229,2x10x16 ft. #2 Douglas Fir,PCS,16,LF,lumber_alt,2x10,16,no,,Alternate species; not auto-picked
+lumber_2x10x18_spf,1012759675,2x10x18 ft. #2 Spruce-Pine-Fir,PCS,18,LF,lumber,2x10,18,no,,
+lumber_2x10x20_spf,897483,2x10x20 ft. #2 Spruce-Pine-Fir,PCS,20,LF,lumber,2x10,20,no,,
+lumber_2x12x16_fir,187393,2 in. x 12 in. x 16 ft. #2 Standard Grade Fir Lumber,PCS,16,LF,lumber,2x12,16,no,,
+lvl_1_75x18x20,100046701,1-3/4 in. x 18 in. x 20 ft. LVL,PCS,20,LF,lvl,1-3/4x18,20,no,,Verify depth against plans
+pt_2x10x12,1001754077,2x10x12 ft. #2 Pressure-Treated Spruce-Pine-Fir,PCS,12,LF,lumber,2x10,12,yes,,
+pt_2x10x16,1001754091,2x10x16 ft. #2 Pressure-Treated Spruce-Pine-Fir,PCS,16,LF,lumber,2x10,16,yes,,
+pt_2x12x16,749877,2x12x16 ft. #2 Pressure-Treated Spruce-Pine-Fir,PCS,16,LF,lumber,2x12,16,yes,,
+pt_post_4x4x8,256276,4x4x8 ft. Pressure-Treated Post,PCS,1,EA,post,4x4,8,yes,,
+pt_newel_4x4x4,1001308713,4x4x4 ft. Pressure-Treated Newel Post,PCS,1,EA,post,4x4,4,yes,,
+decking_5_4x6x12_pt,1001754827,5/4 in. x 6 in. x 12 ft. Standard Ground Contact Pressure-Treated Lumber,PCS,12,LF,decking,5/4x6,12,yes,,
+plywood_tg_3_4_4x8,724084,3/4 in. x 4 ft. x 8 ft. T&G Plywood,PCS,32,SF,sheet,,,no,,
+osb_7_16_4x8,1006212867,7/16 in. x 4 ft. x 8 ft. Oriented Strand Board (Wall and Roof) Panel,PCS,32,SF,sheet,,,no,,
+sheathing_clips_250pk,668896,PSCL 7/16 in. 20-Gauge Galvanized Panel Sheathing Clip (250-Qty),PKG,250,EA,hardware,,,no,,
+adhesive_subfloor_28oz,515581,Subfloor and Deck 28 oz. Tan Low VOC Construction Adhesive,PCS,1,EA,adhesive,,,no,,Coverage per tube not set; enter tubes as EA
+simpson_abu44z,501583,Simpson Strong-Tie ABU44Z Adjustable Post Base,PCS,1,EA,hardware,,,no,,
+simpson_bc4z,294329,Simpson Strong-Tie BC4Z Post Cap,PCS,1,EA,hardware,,,no,,
+simpson_lus28z,865858,LUS ZMAX Galvanized Face-Mount Joist Hanger for 2x8 Nominal Lumber,PCS,1,EA,hardware,,,no,,
+simpson_lus210z,865889,LUS ZMAX Galvanized Face-Mount Joist Hanger for 2x10 Nominal Lumber,PCS,1,EA,hardware,,,no,,
+simpson_h2_5a,102924,H2.5A 18-Gauge ZMAX Galvanized Hurricane Tie,PCS,1,EA,hardware,,,no,,
+simpson_msta12z,1001207734,Simpson Strong-Tie MSTA12Z 18 GA 12 in. Medium Strap Tie,PCS,1,EA,hardware,,,no,,
+simpson_dtt_kit_4pk,1001395140,DTT ZMAX Galvanized Deck Tension Tie Kit for 2x Nominal Lumber with Screws (4-Pack),PCS,4,EA,hardware,,,no,,
+ledgerlok_5in_50pk,983965,5 in. LedgerLOK Ledger Board Fastener (50-Pack),PCS,50,EA,hardware,,,no,,
+sill_seal_5_5x50,409989,ProPink ComfortSeal 5-1/2 in. x 50 ft. Multi-Use Ridged Sill Plate Gasket,PCS,50,LF,roll,,,no,,
+sill_seal_7_5x50,815423,7-1/2 in. x 50 ft. Sill Seal,PCS,50,LF,roll,,,no,,
+shingles_gaf_charcoal,775276,GAF Roof Shingles - Natural Shadow Charcoal,PCS,33.33,SF,roofing,,,no,,3 bundles per square
+ridge_cap_gaf_charcoal,1002079388,GAF Ridge Cap Shingles - Natural Shadow Charcoal,PCS,20,LF,roofing,,,no,,Coverage per bundle: verify on product page
+starter_gaf_charcoal,1001069805,GAF Starter Shingles - Natural Shadow Charcoal,PCS,120,LF,roofing,,,no,,Coverage per bundle: verify on product page
+underlayment_synthetic,,Synthetic Roof Underlayment (10 sq. roll),PCS,1000,SF,roofing,,,no,,Pick product at Pro Desk
+ice_water_weatherwatch,977115,WeatherWatch 36 in. x 50 ft. (150 sq. ft.) Peel and Stick Roof Leak Barrier Roll,PCS,150,SF,roofing,,,no,,
+ridge_vent_cobra_4ft,223180,Cobra SnowCountry 11.5 in. x 48 in. Filtered Roof Ridge Exhaust Vent in Black,PCS,4,LF,roofing,,,no,,
+drip_edge_white_10ft,561967,F4.5 x 10 ft. White Aluminum Drip Edge Flashing,PCS,10,LF,roofing,,,no,,
+step_flashing_4x4x8,626124,4 in. x 4 in. x 8 in. Step Flashing,PCS,1,EA,roofing,,,no,,Enter as piece count
+coil_roofing_nails_7200,112525,1-1/4 in. x 0.120-Gauge 15 Degree Electrogalvanized Coil Roofing Nails (7200/Box),PCS,2400,SF,fastener,,,no,,Rule of thumb ~320 nails per square: verify
+housewrap_tyvek_9x150,641398,9 ft. x 150 ft. HomeWrap Housewrap (1350 Sq.Ft.),PCS,1350,SF,wrap,,,no,,
+housewrap_tape_2x164,176886,2 in. x 164 ft. HomeWrap Housewrap Installation Tape,PCS,164,LF,wrap,,,no,,
+flashing_tape_6x50,1013936478,6 in. x 50 ft. Tyvek Window & Door Flashing Tape,PCS,50,LF,wrap,,,no,,
+cap_nails_3000pk,690342,#12 x 1 in. Electro-Galvanized Plastic Round Cap Roofing Nail (3000-Pack),PCS,1500,SF,fastener,,,no,,Rule of thumb ~2 caps per SF of wrap: verify
+siding_hardie_hz5_8_25,1006380740,Hardie Plank HZ5 8.25 in. x 144 in. Primed Cedarmill Fiber Cement Lap Siding,PCS,7,SF,siding,,,no,,7 in. exposure
+trim_hardie_5_4x6x12,1010869110,Hardie 5/4 in. x 6 in. x 12 ft. Exterior Trim,PCS,12,LF,trim,,,no,,
+starter_strip_galv_10ft,913474,3-1/2 in. x 10 ft. Galvanized Steel Starter Strip,PCS,10,LF,siding,,,no,,
+siding_vinyl_d4_5_white,1001219856,Double 4.5 in. x 145 in. White Dutch Lap Vinyl Siding,PCS,8.7,SF,siding,,,no,,
+starter_vinyl_12ft,438401,12 ft. Vinyl Starter Strip,PCS,12,LF,siding,,,no,,
+j_channel_vinyl_12ft,451552,12 ft. Vinyl J-Channel,PCS,12,LF,siding,,,no,,
+f_channel_vinyl_12ft,438268,12 ft. Vinyl F-Channel,PCS,12,LF,siding,,,no,,
+soffit_vinyl_vented_12x12,1015073651,12 in. x 12 ft. Vented Vinyl Soffit,PCS,12,SF,siding,,,no,,
+soffit_vinyl_nonvented_12x12,1015073650,12 in. x 12 ft. Non-Vented Vinyl Soffit,PCS,12,SF,siding,,,no,,SKU looks suspicious (one off the vented SKU): verify
+drywall_1_2_4x12,897148,1/2 in. x 4 ft. x 12 ft. UltraLight Drywall,PCS,48,SF,drywall,,,no,,
+drywall_5_8_typex_4x12,694576,5/8 in. x 4 ft. x 12 ft. Type X Drywall,PCS,48,SF,drywall,,,no,,
+drywall_1_2_mold_4x8,525423,1/2 in. x 4 ft. x 8 ft. UltraLight Mold Tough Drywall,PCS,32,SF,drywall,,,no,,
+backerboard_1_2_3x5,1002991354,1/2 in. x 3 ft. x 5 ft. Cement Backerboard,PCS,15,SF,drywall,,,no,,
+drywall_tape_250ft,258423,2-1/16 in. x 250 ft. Paper Drywall Joint Tape,PCS,650,SF,drywall,,,no,,Rule of thumb: verify
+joint_compound_4_5gal,258725,4.5 gal. All Purpose Ready-Mixed Joint Compound,GL,450,SF,drywall,,,no,,Rule of thumb: verify
+drywall_screws_1_25_25lb,1003162308,#8 x 1-1/4 in. #2 Phillips Bugle Head Coarse Thread Drywall Screws (25 lb.),PCS,2500,SF,fastener,,,no,,Rule of thumb: verify
+drywall_screws_1_625_25lb,1003162314,#8 x 1-5/8 in. #2 Phillips Bugle Head Coarse Thread Drywall Screws (25 lb.),PCS,2000,SF,fastener,,,no,,Rule of thumb: verify
+corner_bead_metal_9ft,202564,1-1/4 in. x 9 ft. Metal Corner Bead,PCS,9,LF,drywall,,,no,,
+trim_1x4x16_primed,702636,1 in. x 4 in. x 16 ft. Finger-Joint Primed Board,PCS,16,LF,trim,,,no,,
+baseboard_1x6x16_primed,702645,1 in. x 6 in. x 16 ft. Primed Finger-Joint Trim Board,PCS,16,LF,trim,,,no,,
+anchor_bolt_1_2x10,,1/2 in. x 10 in. Galvanized Anchor Bolt with Nut and Washer,PCS,1,EA,hardware,,,no,,Pick product at Pro Desk
+vapor_barrier_6mil,,6 mil Polyethylene Vapor Barrier 10 ft. x 100 ft.,PCS,1000,SF,sheet,,,no,,Pick product at Pro Desk
+paint_interior_wall,,Interior Wall Paint (1 gal.),GL,350,SF,paint,,,no,,Pick product at Pro Desk
+paint_ceiling,,Interior Ceiling Paint (1 gal.),GL,350,SF,paint,,,no,,Pick product at Pro Desk
+primer_drywall,,Drywall Primer (1 gal.),GL,300,SF,paint,,,no,,Pick product at Pro Desk
+paint_exterior,,Exterior Paint (1 gal.),GL,300,SF,paint,,,no,,Pick product at Pro Desk
